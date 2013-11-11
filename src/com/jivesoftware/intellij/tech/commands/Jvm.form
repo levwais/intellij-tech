@@ -1,0 +1,230 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<form xmlns="http://www.intellij.com/uidesigner/form/" version="1" bind-to-class="com.jivesoftware.intellij.tech.commands.Jvm">
+  <grid id="27dc6" binding="panel" layout-manager="BorderLayout" hgap="0" vgap="0">
+    <constraints>
+      <xy x="20" y="20" width="559" height="549"/>
+    </constraints>
+    <properties/>
+    <border type="none"/>
+    <children>
+      <scrollpane id="61420">
+        <constraints border-constraint="Center"/>
+        <properties/>
+        <border type="none"/>
+        <children>
+          <grid id="8e17a" binding="panel2" layout-manager="GridLayoutManager" row-count="18" column-count="1" same-size-horizontally="false" same-size-vertically="false" hgap="-1" vgap="-1">
+            <margin top="0" left="0" bottom="0" right="0"/>
+            <constraints/>
+            <properties/>
+            <border type="none"/>
+            <children>
+              <component id="fcd56" class="javax.swing.JCheckBox" binding="b">
+                <constraints>
+                  <grid row="0" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
+                </constraints>
+                <properties>
+                  <text value="Show the configured base box (-b)"/>
+                </properties>
+              </component>
+              <grid id="93368" layout-manager="BorderLayout" hgap="0" vgap="0">
+                <constraints>
+                  <grid row="1" column="0" row-span="1" col-span="1" vsize-policy="3" hsize-policy="3" anchor="0" fill="1" indent="0" use-parent-layout="false"/>
+                </constraints>
+                <properties/>
+                <border type="none"/>
+                <children>
+                  <component id="c3ca4" class="javax.swing.JCheckBox" binding="B">
+                    <constraints border-constraint="West"/>
+                    <properties>
+                      <margin top="0" left="1" bottom="0" right="1"/>
+                      <text value="Change the base box"/>
+                      <verticalAlignment value="0"/>
+                      <verticalTextPosition value="0"/>
+                    </properties>
+                  </component>
+                  <component id="c78a" class="javax.swing.JTextField" binding="BText">
+                    <constraints border-constraint="East"/>
+                    <properties>
+                      <editable value="false"/>
+                      <enabled value="true"/>
+                      <minimumSize width="100" height="28"/>
+                      <preferredSize width="300" height="28"/>
+                      <text value="[boxname]"/>
+                    </properties>
+                  </component>
+                </children>
+              </grid>
+              <component id="ad8af" class="javax.swing.JCheckBox" binding="c">
+                <constraints>
+                  <grid row="2" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
+                </constraints>
+                <properties>
+                  <text value="Copy a file to the VM (-c)"/>
+                </properties>
+              </component>
+              <grid id="d5099" layout-manager="BorderLayout" hgap="0" vgap="0">
+                <constraints>
+                  <grid row="3" column="0" row-span="1" col-span="1" vsize-policy="3" hsize-policy="3" anchor="0" fill="1" indent="0" use-parent-layout="false"/>
+                </constraints>
+                <properties/>
+                <border type="none"/>
+                <children>
+                  <component id="ae88c" class="javax.swing.JCheckBox" binding="x">
+                    <constraints border-constraint="West"/>
+                    <properties>
+                      <margin top="0" left="1" bottom="0" right="1"/>
+                      <text value="Export box (-x)"/>
+                      <verticalAlignment value="0"/>
+                      <verticalTextPosition value="0"/>
+                    </properties>
+                  </component>
+                  <component id="82025" class="javax.swing.JTextField" binding="xText">
+                    <constraints border-constraint="East"/>
+                    <properties>
+                      <editable value="false"/>
+                      <enabled value="true"/>
+                      <preferredSize width="300" height="28"/>
+                      <text value="[filename]"/>
+                    </properties>
+                  </component>
+                </children>
+              </grid>
+              <component id="420a0" class="javax.swing.JCheckBox" binding="f">
+                <constraints>
+                  <grid row="4" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
+                </constraints>
+                <properties>
+                  <text value="Force action (-f)"/>
+                </properties>
+              </component>
+              <component id="c14c9" class="javax.swing.JCheckBox" binding="d">
+                <constraints>
+                  <grid row="5" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
+                </constraints>
+                <properties>
+                  <text value="Destroy the VM (-d)"/>
+                </properties>
+              </component>
+              <component id="152c9" class="javax.swing.JCheckBox" binding="s">
+                <constraints>
+                  <grid row="6" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
+                </constraints>
+                <properties>
+                  <text value="Shutdown the VM (-s)"/>
+                </properties>
+              </component>
+              <component id="e8e83" class="javax.swing.JCheckBox" binding="u">
+                <constraints>
+                  <grid row="7" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
+                </constraints>
+                <properties>
+                  <text value="Startup the VM (-u)"/>
+                </properties>
+              </component>
+              <component id="b0ea7" class="javax.swing.JCheckBox" binding="n">
+                <constraints>
+                  <grid row="8" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
+                </constraints>
+                <properties>
+                  <text value="Pass -n to ssh (&lt;/dev/null) (-n)"/>
+                </properties>
+              </component>
+              <component id="773f3" class="javax.swing.JCheckBox" binding="t">
+                <constraints>
+                  <grid row="9" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
+                </constraints>
+                <properties>
+                  <text value="allocate tty for ssh session (-t)"/>
+                </properties>
+              </component>
+              <component id="2232e" class="javax.swing.JCheckBox" binding="p">
+                <constraints>
+                  <grid row="10" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
+                </constraints>
+                <properties>
+                  <text value="Print out ssh options (-p)"/>
+                </properties>
+              </component>
+              <component id="38fc9" class="javax.swing.JCheckBox" binding="P">
+                <constraints>
+                  <grid row="11" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
+                </constraints>
+                <properties>
+                  <text value="Don't fetch/update puppet code (-P)"/>
+                </properties>
+              </component>
+              <component id="10baf" class="javax.swing.JCheckBox" binding="R">
+                <constraints>
+                  <grid row="12" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
+                </constraints>
+                <properties>
+                  <text value="Puppet only debug (-R)"/>
+                </properties>
+              </component>
+              <component id="deadc" class="javax.swing.JCheckBox" binding="U">
+                <constraints>
+                  <grid row="13" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
+                </constraints>
+                <properties>
+                  <text value="Install the VirtualBox update gem (-U)"/>
+                </properties>
+              </component>
+              <component id="ed3fc" class="javax.swing.JCheckBox" binding="l">
+                <constraints>
+                  <grid row="14" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
+                </constraints>
+                <properties>
+                  <text value="Reload config (-l)"/>
+                </properties>
+              </component>
+              <component id="c1c6f" class="javax.swing.JCheckBox" binding="r">
+                <constraints>
+                  <grid row="15" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
+                </constraints>
+                <properties>
+                  <text value="Refresh from puppet configs (-r)"/>
+                </properties>
+              </component>
+              <component id="1578a" class="javax.swing.JCheckBox" binding="D">
+                <constraints>
+                  <grid row="16" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
+                </constraints>
+                <properties>
+                  <text value="Debug (-D)"/>
+                </properties>
+              </component>
+              <grid id="3e659" layout-manager="BorderLayout" hgap="0" vgap="0">
+                <constraints>
+                  <grid row="17" column="0" row-span="1" col-span="1" vsize-policy="3" hsize-policy="3" anchor="0" fill="1" indent="0" use-parent-layout="false"/>
+                </constraints>
+                <properties/>
+                <border type="none"/>
+                <children>
+                  <component id="ef66b" class="javax.swing.JCheckBox" binding="a">
+                    <constraints border-constraint="West"/>
+                    <properties>
+                      <label value="&lt;html&gt;Archive the VM's server logs to&lt;br/&gt;&#10;the given local directory (-a)&lt;/html&gt;"/>
+                      <margin top="0" left="1" bottom="0" right="1"/>
+                      <text value="&lt;html&gt;Archive the VM's server logs to&lt;br/&gt;&#10;the given local directory (-a)&lt;/html&gt;"/>
+                      <verticalAlignment value="0"/>
+                      <verticalTextPosition value="0"/>
+                    </properties>
+                  </component>
+                  <component id="55c6c" class="javax.swing.JTextField" binding="aText">
+                    <constraints border-constraint="East"/>
+                    <properties>
+                      <editable value="false"/>
+                      <enabled value="true"/>
+                      <preferredSize width="300" height="28"/>
+                      <text value="[directory]"/>
+                    </properties>
+                  </component>
+                </children>
+              </grid>
+            </children>
+          </grid>
+        </children>
+      </scrollpane>
+    </children>
+  </grid>
+</form>

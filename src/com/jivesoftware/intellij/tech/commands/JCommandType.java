@@ -14,7 +14,7 @@ public enum JCommandType {
     J_DEPLOYABLE("j {deployable}", JDeployable.class),
     AMEND_REVIEW("commit amend + review", AmmendAndReview.class),
     GIT_REVIEW("git review", GitReview.class),
-    J_VM("j-vm {command}", JDeployable.class);
+    J_VM("j-vm {command}", Jvm.class);
 
     public static JCommandType getByName(String name) {
         for (JCommandType jCommandType : values()) {
