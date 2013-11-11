@@ -16,6 +16,7 @@ public enum JCommandType {
     GIT_REVIEW("git review", GitReview.class),
     MVN("mvn command", MvnCommand.class),
     J_VM("j-vm {command}", Jvm.class),
+    J_ENV_UPDATE("j-env-update", EnvUpdate.class),
     CUSTOM("custom command(s)", CustomCommand.class);
 
     public static JCommandType getByName(String name) {
