@@ -1,62 +1,228 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <form xmlns="http://www.intellij.com/uidesigner/form/" version="1" bind-to-class="com.jivesoftware.intellij.tech.commands.JDeployable">
-  <grid id="27dc6" binding="panel" layout-manager="GridLayoutManager" row-count="2" column-count="2" same-size-horizontally="false" same-size-vertically="false" hgap="-1" vgap="-1">
+  <grid id="27dc6" binding="panel" layout-manager="GridLayoutManager" row-count="2" column-count="3" same-size-horizontally="false" same-size-vertically="false" hgap="-1" vgap="-1">
     <margin top="0" left="0" bottom="0" right="0"/>
     <constraints>
-      <xy x="20" y="20" width="500" height="400"/>
+      <xy x="20" y="20" width="571" height="400"/>
     </constraints>
     <properties/>
     <border type="none"/>
     <children>
-      <component id="84cc5" class="javax.swing.JTextField" binding="textField1" default-binding="true">
-        <constraints>
-          <grid row="0" column="1" row-span="1" col-span="1" vsize-policy="0" hsize-policy="6" anchor="8" fill="1" indent="0" use-parent-layout="false">
-            <preferred-size width="150" height="-1"/>
-          </grid>
-        </constraints>
-        <properties/>
-      </component>
       <component id="b3677" class="javax.swing.JLabel">
         <constraints>
           <grid row="0" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
         </constraints>
         <properties>
           <text value="Module(s):"/>
+          <verticalAlignment value="0"/>
         </properties>
       </component>
-      <grid id="f8ce7" layout-manager="FlowLayout" hgap="5" vgap="5" flow-align="1">
+      <grid id="f8ce7" layout-manager="FormLayout">
+        <rowspec value="center:d:noGrow"/>
+        <rowspec value="top:3dlu:noGrow"/>
+        <rowspec value="center:max(d;4px):noGrow"/>
+        <rowspec value="top:3dlu:noGrow"/>
+        <rowspec value="center:max(d;4px):noGrow"/>
+        <rowspec value="top:3dlu:noGrow"/>
+        <rowspec value="center:max(d;4px):noGrow"/>
+        <rowspec value="top:3dlu:noGrow"/>
+        <rowspec value="center:max(d;4px):noGrow"/>
+        <rowspec value="top:3dlu:noGrow"/>
+        <rowspec value="center:max(d;4px):noGrow"/>
+        <rowspec value="top:3dlu:noGrow"/>
+        <rowspec value="center:max(d;4px):noGrow"/>
+        <rowspec value="top:3dlu:noGrow"/>
+        <rowspec value="center:max(d;4px):noGrow"/>
+        <rowspec value="top:3dlu:noGrow"/>
+        <rowspec value="center:max(d;4px):noGrow"/>
+        <rowspec value="top:3dlu:noGrow"/>
+        <rowspec value="center:max(d;4px):noGrow"/>
+        <colspec value="fill:d:grow"/>
         <constraints>
-          <grid row="1" column="0" row-span="1" col-span="2" vsize-policy="3" hsize-policy="3" anchor="0" fill="3" indent="0" use-parent-layout="false"/>
+          <grid row="1" column="0" row-span="1" col-span="3" vsize-policy="7" hsize-policy="1" anchor="0" fill="3" indent="0" use-parent-layout="false"/>
         </constraints>
         <properties/>
         <border type="none"/>
         <children>
-          <component id="8b40e" class="javax.swing.JCheckBox" binding="checkBox1" default-binding="true">
-            <constraints/>
+          <component id="8b40e" class="javax.swing.JCheckBox" binding="d">
+            <constraints>
+              <grid row="0" column="0" row-span="1" col-span="1" vsize-policy="3" hsize-policy="3" anchor="0" fill="0" indent="0" use-parent-layout="false">
+                <preferred-size width="254" height="27"/>
+              </grid>
+              <forms/>
+            </constraints>
             <properties>
-              <text value="CheckBox"/>
+              <actionCommand value=""/>
+              <horizontalAlignment value="10"/>
+              <horizontalTextPosition value="11"/>
+              <label value="Debug (-d)"/>
+              <text value="Debug (-d)"/>
             </properties>
           </component>
-          <component id="43f72" class="javax.swing.JCheckBox" binding="checkBox2" default-binding="true">
-            <constraints/>
+          <component id="36aff" class="javax.swing.JCheckBox" binding="f">
+            <constraints>
+              <grid row="4" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
+              <forms/>
+            </constraints>
             <properties>
-              <text value="CheckBox"/>
+              <text value="Fast, pass threading options to maven (-f)"/>
             </properties>
           </component>
-          <component id="22a90" class="javax.swing.JCheckBox" binding="checkBox3" default-binding="true">
-            <constraints/>
+          <component id="8bbd4" class="javax.swing.JCheckBox" binding="t">
+            <constraints>
+              <grid row="8" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
+              <forms/>
+            </constraints>
             <properties>
-              <text value="CheckBox"/>
+              <text value="Run tests (-t)"/>
             </properties>
           </component>
-          <component id="8c5eb" class="javax.swing.JCheckBox" binding="checkBox4" default-binding="true">
-            <constraints/>
+          <component id="59a73" class="javax.swing.JCheckBox" binding="B">
+            <constraints>
+              <grid row="10" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
+              <forms/>
+            </constraints>
             <properties>
-              <text value="CheckBox"/>
+              <text value="Skip build (-B)"/>
+            </properties>
+          </component>
+          <component id="ca3f7" class="javax.swing.JCheckBox" binding="c">
+            <constraints>
+              <grid row="2" column="0" row-span="1" col-span="1" vsize-policy="3" hsize-policy="3" anchor="0" fill="0" indent="0" use-parent-layout="false">
+                <preferred-size width="254" height="27"/>
+              </grid>
+              <forms/>
+            </constraints>
+            <properties>
+              <actionCommand value=""/>
+              <horizontalAlignment value="10"/>
+              <horizontalTextPosition value="11"/>
+              <label value="Clean (-c)"/>
+              <text value="Clean (-c)"/>
+            </properties>
+          </component>
+          <component id="7499b" class="javax.swing.JCheckBox" binding="r">
+            <constraints>
+              <grid row="6" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
+              <forms/>
+            </constraints>
+            <properties>
+              <text value="Build root first (-r)"/>
+            </properties>
+          </component>
+          <component id="b36f3" class="javax.swing.JCheckBox" binding="x">
+            <constraints>
+              <grid row="12" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
+              <forms/>
+            </constraints>
+            <properties>
+              <text value="Link into build target directory (-x)"/>
+            </properties>
+          </component>
+          <component id="3eca4" class="javax.swing.JCheckBox" binding="X">
+            <constraints>
+              <grid row="14" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
+              <forms/>
+            </constraints>
+            <properties>
+              <text value="Real deploy, don't link into build target directory (default) (-X)"/>
+            </properties>
+          </component>
+          <component id="2d03" class="javax.swing.JCheckBox" binding="M">
+            <constraints>
+              <grid row="16" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
+              <forms/>
+            </constraints>
+            <properties>
+              <text value="Don't make project dependancis (don't pass -am to mvn) (-M)"/>
+            </properties>
+          </component>
+          <component id="da517" class="javax.swing.JCheckBox" binding="l">
+            <constraints>
+              <grid row="18" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
+              <forms/>
+            </constraints>
+            <properties>
+              <text value="Tail logs after building and deploying servers, defaults to J_TAIL (-l)"/>
             </properties>
           </component>
         </children>
       </grid>
+      <component id="49359" class="javax.swing.JComboBox" binding="module">
+        <constraints>
+          <grid row="0" column="1" row-span="1" col-span="1" vsize-policy="0" hsize-policy="2" anchor="8" fill="1" indent="0" use-parent-layout="false"/>
+        </constraints>
+        <properties>
+          <editable value="true"/>
+          <model>
+            <item value="fe-dev"/>
+            <item value="activity-deployable"/>
+            <item value="api-corev3-deployable"/>
+            <item value="api-corev3-test-util-deployable"/>
+            <item value="azkaban-executor-deployable"/>
+            <item value="azkaban-test-jobs-deployable"/>
+            <item value="azkaban-web-deployable"/>
+            <item value="bin-store-deployable"/>
+            <item value="clusterizer-deployable"/>
+            <item value="configurator-deployable"/>
+            <item value="counts-deployable"/>
+            <item value="df-job-deployable"/>
+            <item value="elasticsearch-deployable"/>
+            <item value="entitlements-deployable"/>
+            <item value="entity-score-set-deployable"/>
+            <item value="event-persistence-deployable"/>
+            <item value="event-receiver-deployable"/>
+            <item value="global-version-management"/>
+            <item value="hbase-master-deployable"/>
+            <item value="hbase-regionserver-deployable"/>
+            <item value="hbase-thrift-server-deployable"/>
+            <item value="hdfs-datanode-deployable"/>
+            <item value="hdfs-namenode-deployable"/>
+            <item value="hdfs-secondarynamenode-deployable"/>
+            <item value="hello-world-deployable"/>
+            <item value="identity-deployable"/>
+            <item value="inflight-event-deployable"/>
+            <item value="kafka-deployable"/>
+            <item value="kibana-deployable"/>
+            <item value="log-publisher-deployable"/>
+            <item value="mapreduce-jobtracker-deployable"/>
+            <item value="mapreduce-tasktracker-deployable"/>
+            <item value="materializer-deployable"/>
+            <item value="metric-publisher-deployable"/>
+            <item value="mirror-maker-deployable"/>
+            <item value="model-master-deployable"/>
+            <item value="mysql-deployable"/>
+            <item value="opentsdb-deployable"/>
+            <item value="ops-tools-deployable"/>
+            <item value="orchestrator-deployable"/>
+            <item value="perms-deployable"/>
+            <item value="platform-monitor-deployable"/>
+            <item value="puppet-deployable"/>
+            <item value="puppetmaster-deployable"/>
+            <item value="reader-deployable"/>
+            <item value="rebuild-job-deployable"/>
+            <item value="reco-entity-score-set-deployable"/>
+            <item value="redis-deployable"/>
+            <item value="search-bot-deployable"/>
+            <item value="search-gateway-deployable"/>
+            <item value="search-insights-deployable"/>
+            <item value="sensei-deployable"/>
+            <item value="sensei-deployable-activity"/>
+            <item value="sensei-deployable-container"/>
+            <item value="sensei-deployable-content"/>
+            <item value="sensei-deployable-edge"/>
+            <item value="sensei-deployable-legacy"/>
+            <item value="sensei-deployable-monitor"/>
+            <item value="sensei-deployable-user"/>
+            <item value="skeletor-deployable"/>
+            <item value="stratos-deployable"/>
+            <item value="tracing-deployable"/>
+            <item value="view-persistence-deployable"/>
+            <item value="view-producer-deployable"/>
+            <item value="zookeeper-deployable"/>
+          </model>
+        </properties>
+      </component>
     </children>
   </grid>
 </form>
