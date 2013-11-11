@@ -1,5 +1,7 @@
 package com.jivesoftware.intellij.tech;
 
+import com.google.common.collect.Lists;
+import com.google.common.collect.Maps;
 import com.intellij.ide.util.PropertiesComponent;
 import com.intellij.notification.*;
 import com.intellij.openapi.project.Project;
@@ -12,11 +14,13 @@ import com.intellij.ui.content.ContentFactory;
 import com.intellij.ui.treeStructure.Tree;
 import com.jivesoftware.intellij.tech.commands.JCommandInstance;
 import com.jivesoftware.intellij.tech.commands.JCommandType;
+import org.codehaus.jettison.json.JSONException;
 
 import javax.imageio.ImageIO;
 import javax.swing.*;
 import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.DefaultTreeCellRenderer;
+import javax.swing.tree.TreeNode;
 import javax.swing.tree.TreePath;
 import java.awt.*;
 import java.awt.event.ActionEvent;
@@ -27,6 +31,7 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.util.Map;
 import java.util.UUID;
 
 /**
@@ -44,29 +49,8 @@ public class JToolWindow implements ToolWindowFactory {
     private DefaultMutableTreeNode savedNode;
     private Tree tree;
     private DefaultMutableTreeNode currentNode;
-
-    public class ProcessWatcher implements Runnable {
-
-        private Process p;
-        private volatile boolean finished = false;
-
-        public ProcessWatcher(Process p) {
-            this.p = p;
-            new Thread(this).start();
-        }
-
-        public boolean isFinished() {
-            return finished;
-        }
-
-        public void run() {
-            try {
-                p.waitFor();
-            } catch (Exception e) {}
-            finished = true;
-        }
-
-    }
+    private Map<String, Command> id2CommandMap = Maps.newHashMap();
+    private Process currentProcess = null;
 
     private JPanel panel1;
     private JComboBox comboBox1;
@@ -77,7 +61,10 @@ public class JToolWindow implements ToolWindowFactory {
     private JButton addCommandBtn;
     private JPanel treePanel;
     private JTextField commandTitleTxt;
+    private JButton duplicateButton;
+    private JButton removeBtn;
     private Project project;
+    private boolean running = false;
 
     public JCommandInstance currentInstance;
 
@@ -85,48 +72,220 @@ public class JToolWindow implements ToolWindowFactory {
         addCommandBtn.addActionListener(new ActionListener() {
 
             public void actionPerformed(ActionEvent e) {
+                commandTitleTxt.setText("");
                 final JCommandType selectedItem = (JCommandType)comboBox1.getSelectedItem();
                 final JCommandInstance instance = selectedItem.getInstance();
                 loadInstance(instance);
-//
             }
         });
         runButton.addActionListener(new ActionListener() {
 
             public void actionPerformed(ActionEvent e) {
-                new Thread(new Runnable() {
-                    public void run() {
-                        runJCommand();
-                    }
-                }).start();
+                if (running) {
+                    currentProcess.destroy();
 
-                EventLog.getEventLog(project).show(null);
+                    try {
+                        runButton.setIcon(new ImageIcon(ImageIO.read(this.getClass().getResource("/resources/play.png"))));
+                    }
+                    catch (IOException e1) {
+                        // ignore
+                    }
+                    runButton.setToolTipText("Run");
+                    running = false;
+                }
+                else {
+                    new Thread(new Runnable() {
+                        public void run() {
+                            runCurrentCommand();
+                        }
+                    }).start();
+
+                    EventLog.getEventLog(project).show(null);
+
+
+                    try {
+                        runButton.setIcon(new ImageIcon(ImageIO.read(this.getClass().getResource("/resources/stop.png"))));
+                    }
+                    catch (IOException e1) {
+                        // ignore
+                    }
+                    runButton.setToolTipText("Stop");
+                    running = true;
+                }
             }
         });
 
         saveButton.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
-                final String title = commandTitleTxt.getText().trim();
-                if (title.isEmpty()) {
-                    Messages.showErrorDialog("Please add a title for you command before saving.", "No Command Title");
-                    return;
-                }
-                final String id = UUID.randomUUID().toString();
+                saveInstance();
+            }
+        });
 
-                final Command command = new Command(title, currentInstance.getCommandStr(), id, currentInstance.getType());
-                if (currentNode == null) { // no current node
-                    currentNode = new DefaultMutableTreeNode(command);
-                    savedNode.add(currentNode);
-                }
-                else {
-                    currentNode.setUserObject(command);
+        removeBtn.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                if (tree.getLastSelectedPathComponent() != null) {
+                    if (tree.getLastSelectedPathComponent() instanceof DefaultMutableTreeNode) {
+                        final DefaultMutableTreeNode selectedNode = (DefaultMutableTreeNode) tree.getLastSelectedPathComponent();
+                        final Object userObject = selectedNode.getUserObject();
+                        if (userObject != null && userObject instanceof Command) {
+                            if (selectedNode.getParent() == savedNode) {
+                                savedNode.remove(selectedNode);
+                                storeSavedNodes();
+                            }
+                            else if (selectedNode.getParent() == favNode) {
+                                favNode.remove(selectedNode);
+                                storeFavNodes();
+                            }
+
+                            tree.updateUI();
+                            return;
+                        }
+                    }
                 }
 
-                tree.expandPath(new TreePath(currentNode));
-                tree.updateUI();
+                Messages.showErrorDialog("You must select a command before doing this action.", "No Selected Command");
+            }
+        });
+
+        duplicateButton.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                if (tree.getLastSelectedPathComponent() != null) {
+                    if (tree.getLastSelectedPathComponent() instanceof DefaultMutableTreeNode) {
+                        final DefaultMutableTreeNode selectedNode = (DefaultMutableTreeNode) tree.getLastSelectedPathComponent();
+                        final Object userObject = selectedNode.getUserObject();
+                        if (userObject != null && userObject instanceof Command) {
+                            final Command currentCommand = (Command) userObject;
+                            Command newCommand = new Command(currentCommand.getName() + "#2", currentCommand.getCommandStr(), UUID.randomUUID().toString(), currentCommand.getType());
+                            loadInstance(currentCommand.getType().getInstance());
+
+                            addCommandToSavedNode(newCommand);
+
+                            return;
+                        }
+                    }
+                }
+
+                Messages.showErrorDialog("You must select a command before doing this action.", "No Selected Command");
+            }
+        });
+
+        addToFavsButton.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                if (tree.getLastSelectedPathComponent() != null) {
+                    if (tree.getLastSelectedPathComponent() instanceof DefaultMutableTreeNode) {
+                        final DefaultMutableTreeNode selectedNode = (DefaultMutableTreeNode) tree.getLastSelectedPathComponent();
+                        final Object userObject = selectedNode.getUserObject();
+                        if (userObject != null && userObject instanceof Command) {
+                            if (selectedNode.getParent() == savedNode) {
+                                favNode.add(new DefaultMutableTreeNode(userObject));
+                                storeFavNodes();
+
+                                tree.updateUI();
+                                return;
+                            }
+                        }
+                    }
+                }
+
+                Messages.showErrorDialog("You must select a command before doing this action.", "No Selected Command");
             }
         });
     }
+
+
+
+    private void saveInstance() {
+        final String title = commandTitleTxt.getText().trim();
+        if (title.isEmpty()) {
+            Messages.showErrorDialog("Please add a title for you command before saving.", "No Command Title");
+            return;
+        }
+
+        if (currentNode == null) { // no current node
+            final String id = UUID.randomUUID().toString();
+            final Command command = new Command(title, currentInstance.getCommandStr(), id, currentInstance.getType());
+            currentNode = addCommandToSavedNode(command);
+        }
+        else {
+            final Command command = (Command) currentNode.getUserObject();
+            command.setCommandStr(currentInstance.getCommandStr());
+            command.setName(title);
+            currentNode.setUserObject(command);
+        }
+
+        tree.expandPath(new TreePath(currentNode));
+        tree.updateUI();
+
+        storeSavedNodes();
+    }
+
+    private DefaultMutableTreeNode addCommandToSavedNode(Command command) {
+        id2CommandMap.put(command.getId(), command);
+        final DefaultMutableTreeNode newNode = new DefaultMutableTreeNode(command);
+        savedNode.add(newNode);
+
+        tree.updateUI();
+
+        return newNode;
+    }
+
+    private void storeSavedNodes() {
+        final PropertiesComponent instance = PropertiesComponent.getInstance(project);
+        java.util.List<String> commands = Lists.newArrayList();
+        for (int i = 0; i < savedNode.getChildCount(); i++) {
+            final TreeNode childNode = savedNode.getChildAt(i);
+            if (childNode instanceof DefaultMutableTreeNode) {
+                final Object userObject = ((DefaultMutableTreeNode) childNode).getUserObject();
+                if (userObject instanceof Command) {
+                    try {
+                        commands.add(Command.getString(((Command)userObject)));
+                    }
+                    catch (JSONException e) {
+                        // ignore
+                    }
+                }
+            }
+        }
+        instance.setValues("savedCommands", commands.toArray(new String[commands.size()]));
+    }
+
+    private void loadSavedCommands() {
+        savedNode.removeAllChildren();
+        for (String commandStr : PropertiesComponent.getInstance(project).getValues("savedCommands")) {
+            try {
+                addCommandToSavedNode(Command.getCommand(commandStr));
+            }
+            catch (JSONException e) {
+                // ignore
+            }
+        }
+        tree.updateUI();
+    }
+    private void storeFavNodes() {
+        final PropertiesComponent instance = PropertiesComponent.getInstance(project);
+        java.util.List<String> commandIds = Lists.newArrayList();
+        for (int i = 0; i < favNode.getChildCount(); i++) {
+            final TreeNode childNode = favNode.getChildAt(i);
+            if (childNode instanceof DefaultMutableTreeNode) {
+                final Object userObject = ((DefaultMutableTreeNode) childNode).getUserObject();
+                if (userObject instanceof Command) {
+                    commandIds.add(((Command) userObject).getId());
+                }
+            }
+        }
+        instance.setValues("favCommandIds", commandIds.toArray(new String[commandIds.size()]));
+    }
+
+    private void loadFavCommands() {
+        favNode.removeAllChildren();
+        for (String commandId : PropertiesComponent.getInstance(project).getValues("favCommandIds")) {
+            final Command command = id2CommandMap.get(commandId);
+            favNode.add(new DefaultMutableTreeNode(command));
+        }
+        tree.updateUI();
+    }
+
+
 
     private void loadInstance(JCommandInstance instance) {
         currentInstance = instance;
@@ -140,13 +299,16 @@ public class JToolWindow implements ToolWindowFactory {
         saveButton.setEnabled(true);
     }
 
-    private void runJCommand() {
+
+
+    private void runCurrentCommand() {
         final Notifications notifications = project.getMessageBus().syncPublisher(Notifications.TOPIC);
 
         boolean error = false;
         for (ProcessBuilder command : currentInstance.getCommands()) {
             if (!runCommand(notifications, command)) {
                 error = true;
+                break;
             }
         }
 
@@ -162,21 +324,22 @@ public class JToolWindow implements ToolWindowFactory {
     }
 
     private boolean runCommand(Notifications notifications, ProcessBuilder command) {
+        currentProcess = null;
         boolean error = false;
         notifications.notify(new Notification(NOTIFICATION_LOG_GROUP, NOTIFICATION_TITLE, "*** Running command: " +
                 StringUtil.join(command.command(), " "),
                 NotificationType.INFORMATION));
-        Process process = null;
         try {
-            process = command.start();
+            currentProcess = command.start();
         }
         catch (IOException e) {
             notifications.notify(new Notification(NOTIFICATION_LOG_GROUP, NOTIFICATION_TITLE, "failed to run: " + e.getMessage(),
                     NotificationType.ERROR));
+            error = true;
         }
 
-        if (process != null) {
-            InputStream output = process.getInputStream();
+        if (currentProcess != null) {
+            InputStream output = currentProcess.getInputStream();
             InputStreamReader isr = new InputStreamReader(output);
             BufferedReader br = new BufferedReader(isr);
 
@@ -190,7 +353,7 @@ public class JToolWindow implements ToolWindowFactory {
                                 NotificationType.INFORMATION));
                     }
                     try {
-                        if (0 != process.exitValue()) {
+                        if (0 != currentProcess.exitValue()) {
                             error = true;
                         }
                         exit = true;
@@ -203,6 +366,7 @@ public class JToolWindow implements ToolWindowFactory {
             catch (IOException e) {
                 notifications.notify(new Notification(NOTIFICATION_LOG_GROUP, NOTIFICATION_TITLE, "failed to run: " + e.getMessage(),
                         NotificationType.ERROR));
+                error = true;
             }
         }
         return !error;
@@ -226,9 +390,7 @@ public class JToolWindow implements ToolWindowFactory {
         initComboBox(comboBox1);
         initTree(treePanel);
 
-        final PropertiesComponent instance = PropertiesComponent.getInstance(project);
-
-
+        loadSavedCommands();
     }
 
     private void initTree(JPanel treePanel) {
