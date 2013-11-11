@@ -15,7 +15,8 @@ public enum JCommandType {
     AMEND_REVIEW("commit amend + review", AmmendAndReview.class),
     GIT_REVIEW("git review", GitReview.class),
     MVN("mvn command", MvnCommand.class),
-    J_VM("j-vm {command}", Jvm.class);
+    J_VM("j-vm {command}", Jvm.class),
+    CUSTOM("custom command(s)", CustomCommand.class);
 
     public static JCommandType getByName(String name) {
         for (JCommandType jCommandType : values()) {
