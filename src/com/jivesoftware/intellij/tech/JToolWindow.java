@@ -72,6 +72,7 @@ public class JToolWindow implements ToolWindowFactory {
         addCommandBtn.addActionListener(new ActionListener() {
 
             public void actionPerformed(ActionEvent e) {
+                currentNode = null;
                 commandTitleTxt.setText("");
                 final JCommandType selectedItem = (JCommandType)comboBox1.getSelectedItem();
                 final JCommandInstance instance = selectedItem.getInstance();
@@ -131,6 +132,10 @@ public class JToolWindow implements ToolWindowFactory {
                             if (selectedNode.getParent() == savedNode) {
                                 savedNode.remove(selectedNode);
                                 storeSavedNodes();
+                                id2CommandMap.remove(((Command)userObject).getId());
+
+                                loadFavCommands();
+                                storeFavNodes();
                             }
                             else if (selectedNode.getParent() == favNode) {
                                 favNode.remove(selectedNode);
@@ -259,6 +264,7 @@ public class JToolWindow implements ToolWindowFactory {
                 // ignore
             }
         }
+        tree.expandPath(new TreePath(savedNode.getPath()));
         tree.updateUI();
     }
     private void storeFavNodes() {
@@ -280,8 +286,11 @@ public class JToolWindow implements ToolWindowFactory {
         favNode.removeAllChildren();
         for (String commandId : PropertiesComponent.getInstance(project).getValues("favCommandIds")) {
             final Command command = id2CommandMap.get(commandId);
-            favNode.add(new DefaultMutableTreeNode(command));
+            if (command != null) {
+                favNode.add(new DefaultMutableTreeNode(command));
+            }
         }
+        tree.expandPath(new TreePath(favNode.getPath()));
         tree.updateUI();
     }
 
@@ -391,6 +400,7 @@ public class JToolWindow implements ToolWindowFactory {
         initTree(treePanel);
 
         loadSavedCommands();
+        loadFavCommands();
     }
 
     private void initTree(JPanel treePanel) {
@@ -408,6 +418,7 @@ public class JToolWindow implements ToolWindowFactory {
             }
 
         });
+        tree.setRootVisible(false);
 
         treePanel.add(tree, BorderLayout.CENTER);
         treePanel.updateUI();
