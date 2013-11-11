@@ -83,16 +83,9 @@ public class JToolWindow implements ToolWindowFactory {
 
             public void actionPerformed(ActionEvent e) {
                 if (running) {
-                    currentProcess.destroy();
-
-                    try {
-                        runButton.setIcon(new ImageIcon(ImageIO.read(this.getClass().getResource("/resources/play.png"))));
+                    if (currentProcess != null) {
+                        currentProcess.destroy();
                     }
-                    catch (IOException e1) {
-                        // ignore
-                    }
-                    runButton.setToolTipText("Run");
-                    running = false;
                 }
                 else {
                     new Thread(new Runnable() {
@@ -102,17 +95,8 @@ public class JToolWindow implements ToolWindowFactory {
                     }).start();
 
                     EventLog.getEventLog(project).show(null);
-
-
-                    try {
-                        runButton.setIcon(new ImageIcon(ImageIO.read(this.getClass().getResource("/resources/stop.png"))));
-                    }
-                    catch (IOException e1) {
-                        // ignore
-                    }
-                    runButton.setToolTipText("Stop");
-                    running = true;
                 }
+                changeRunButton();
             }
         });
 
@@ -197,6 +181,28 @@ public class JToolWindow implements ToolWindowFactory {
         });
     }
 
+    private void changeRunButton() {
+        if (running) {
+            try {
+                runButton.setIcon(new ImageIcon(ImageIO.read(this.getClass().getResource("/resources/play.png"))));
+            }
+            catch (IOException e1) {
+                // ignore
+            }
+            runButton.setToolTipText("Run");
+            running = false;
+        }
+        else {
+            try {
+                runButton.setIcon(new ImageIcon(ImageIO.read(this.getClass().getResource("/resources/stop.png"))));
+            }
+            catch (IOException e1) {
+                // ignore
+            }
+            runButton.setToolTipText("Stop");
+            running = true;
+        }
+    }
 
 
     private void saveInstance() {
@@ -337,7 +343,9 @@ public class JToolWindow implements ToolWindowFactory {
             notifications.notify(new Notification(NOTIFICATION_BALLOON_GROUP, NOTIFICATION_TITLE, commandTitleTxt.getText() + " command finished!",
                     NotificationType.INFORMATION));
         }
-
+        if (running) {
+            changeRunButton(); // change "stop" to "run"
+        }
     }
 
     private boolean runCommand(Notifications notifications, ProcessBuilder command) {
