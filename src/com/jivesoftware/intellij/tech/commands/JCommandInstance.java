@@ -9,4 +9,8 @@ public interface JCommandInstance {
     List<ProcessBuilder> getCommands();
 
     JPanel getPanel();
+
+    String getCommandStr();
+
+    void LoadCommand(String commandStr);
 }

@@ -15,6 +15,16 @@ public enum JCommandType {
     AMEND_REVIEW("commit amend + review", AmmendAndReview.class),
     GIT_REVIEW("git review", GitReview.class),
     J_VM("j-vm {command}", JDeployable.class);
+
+    public static JCommandType getByName(String name) {
+        for (JCommandType jCommandType : values()) {
+            if (jCommandType.name.equalsIgnoreCase(name)) {
+                return jCommandType;
+            }
+        }
+        return null;
+    }
+
     private String name;
     private Class instanceClass;
 

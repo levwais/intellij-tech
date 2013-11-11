@@ -1,6 +1,8 @@
 package com.jivesoftware.intellij.tech.commands;
 
 import com.google.common.collect.Lists;
+import org.codehaus.jettison.json.JSONException;
+import org.codehaus.jettison.json.JSONObject;
 
 import javax.swing.*;
 import java.io.File;
@@ -41,5 +43,26 @@ public class JDeployable implements JCommandInstance {
 
     public JPanel getPanel() {
         return panel;
+    }
+
+    public String getCommandStr() {
+        try {
+            JSONObject jsonObject = new JSONObject();
+            jsonObject.put("module", textField1.getText());
+            return jsonObject.toString();
+        }
+        catch (JSONException e) {
+            return null;
+        }
+    }
+
+    public void LoadCommand(String commandStr) {
+        try {
+            JSONObject jsonObject = new JSONObject(commandStr);
+            textField1.setText(jsonObject.getString("module"));
+        }
+        catch (JSONException e) {
+            return;
+        }
     }
 }

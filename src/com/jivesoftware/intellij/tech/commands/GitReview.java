@@ -22,12 +22,20 @@ public class GitReview implements JCommandInstance {
 
     public List<ProcessBuilder> getCommands() {
         return Lists.newArrayList(
-                new ProcessBuilder("git", "review").directory(new File(System.getenv("J_BIN"))).redirectErrorStream(true)
+                new ProcessBuilder("git", "review").directory(new File(System.getenv("J_BIN"))).redirectErrorStream(
+                        true)
         );
 
     }
 
     public JPanel getPanel() {
         return panel1;
+    }
+
+    public String getCommandStr() {
+        return "";
+    }
+
+    public void LoadCommand(String commandStr) {
     }
 }

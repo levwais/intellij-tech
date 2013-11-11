@@ -29,4 +29,11 @@ public class AmmendAndReview implements JCommandInstance {
     public JPanel getPanel() {
         return panel1;
     }
+
+    public String getCommandStr() {
+        return "";
+    }
+
+    public void LoadCommand(String commandStr) {
+    }
 }

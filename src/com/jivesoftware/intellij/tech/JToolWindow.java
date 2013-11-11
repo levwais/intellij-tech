@@ -3,6 +3,7 @@ package com.jivesoftware.intellij.tech;
 import com.intellij.ide.util.PropertiesComponent;
 import com.intellij.notification.*;
 import com.intellij.openapi.project.Project;
+import com.intellij.openapi.ui.Messages;
 import com.intellij.openapi.util.text.StringUtil;
 import com.intellij.openapi.wm.ToolWindow;
 import com.intellij.openapi.wm.ToolWindowFactory;
@@ -12,15 +13,21 @@ import com.intellij.ui.treeStructure.Tree;
 import com.jivesoftware.intellij.tech.commands.JCommandInstance;
 import com.jivesoftware.intellij.tech.commands.JCommandType;
 
+import javax.imageio.ImageIO;
 import javax.swing.*;
 import javax.swing.tree.DefaultMutableTreeNode;
+import javax.swing.tree.DefaultTreeCellRenderer;
+import javax.swing.tree.TreePath;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.util.UUID;
 
 /**
  * Created with IntelliJ IDEA.
@@ -33,6 +40,10 @@ public class JToolWindow implements ToolWindowFactory {
     public static final String NOTIFICATION_TITLE = "IntelliJ-Tech";
     public static final String NOTIFICATION_LOG_GROUP = NOTIFICATION_TITLE;
     public static final String NOTIFICATION_BALLOON_GROUP = "IntelliJ-Tech-Balloon";
+    private DefaultMutableTreeNode favNode;
+    private DefaultMutableTreeNode savedNode;
+    private Tree tree;
+    private DefaultMutableTreeNode currentNode;
 
     public class ProcessWatcher implements Runnable {
 
@@ -75,14 +86,8 @@ public class JToolWindow implements ToolWindowFactory {
 
             public void actionPerformed(ActionEvent e) {
                 final JCommandType selectedItem = (JCommandType)comboBox1.getSelectedItem();
-                currentInstance = selectedItem.getInstance();
-
-                commandPanel.removeAll();
-                commandPanel.add(currentInstance.getPanel(), BorderLayout.CENTER);
-                commandPanel.updateUI();
-
-//                commandTitleTxt.setText(currentInstance.getTitle());
-//                commandTitleTxt.updateUI();
+                final JCommandInstance instance = selectedItem.getInstance();
+                loadInstance(instance);
 //
             }
         });
@@ -98,6 +103,41 @@ public class JToolWindow implements ToolWindowFactory {
                 EventLog.getEventLog(project).show(null);
             }
         });
+
+        saveButton.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                final String title = commandTitleTxt.getText().trim();
+                if (title.isEmpty()) {
+                    Messages.showErrorDialog("Please add a title for you command before saving.", "No Command Title");
+                    return;
+                }
+                final String id = UUID.randomUUID().toString();
+
+                final Command command = new Command(title, currentInstance.getCommandStr(), id, currentInstance.getType());
+                if (currentNode == null) { // no current node
+                    currentNode = new DefaultMutableTreeNode(command);
+                    savedNode.add(currentNode);
+                }
+                else {
+                    currentNode.setUserObject(command);
+                }
+
+                tree.expandPath(new TreePath(currentNode));
+                tree.updateUI();
+            }
+        });
+    }
+
+    private void loadInstance(JCommandInstance instance) {
+        currentInstance = instance;
+
+        commandPanel.removeAll();
+        commandPanel.add(currentInstance.getPanel(), BorderLayout.CENTER);
+        commandPanel.updateUI();
+
+        addToFavsButton.setEnabled(true);
+        runButton.setEnabled(true);
+        saveButton.setEnabled(true);
     }
 
     private void runJCommand() {
@@ -193,11 +233,84 @@ public class JToolWindow implements ToolWindowFactory {
 
     private void initTree(JPanel treePanel) {
         final DefaultMutableTreeNode root = new DefaultMutableTreeNode("J-Tech Commands");
-        root.add(new DefaultMutableTreeNode("Favorites"));
-        JTree tree = new Tree(root);
+        favNode = new DefaultMutableTreeNode("<html>Favorites</html>");
+        savedNode = new DefaultMutableTreeNode("<html>Saved</html>");
+        root.add(favNode);
+        root.add(savedNode);
+        tree = new Tree(root);
+        tree.setShowsRootHandles(false);
+        tree.setCellRenderer(new TreeRenderer(favNode, savedNode));
+        tree.addMouseListener(new MouseAdapter() {
+            public void mouseClicked(MouseEvent e) {
+                treeNodeMouseClicked(e);
+            }
+
+        });
 
         treePanel.add(tree, BorderLayout.CENTER);
         treePanel.updateUI();
+
+    }
+
+    private void treeNodeMouseClicked(MouseEvent me) {
+        if (me.getButton() != MouseEvent.BUTTON1) {
+            return;
+        }
+        TreePath tp = tree.getPathForLocation(me.getX(), me.getY());
+        if (tp == null) {
+            return;
+        }
+        final Object node = tp.getLastPathComponent();
+        if (node instanceof DefaultMutableTreeNode && ((DefaultMutableTreeNode)node).getUserObject() instanceof Command) {
+            currentNode = (DefaultMutableTreeNode) node;
+
+            final Command command = (Command) currentNode.getUserObject();
+            final JCommandInstance instance = command.getType().getInstance();
+            instance.LoadCommand(command.getCommandStr());
+            loadInstance(instance);
+
+            commandTitleTxt.setText(command.getName());
+
+            if (me.getClickCount() >= 2) {
+                runButton.doClick();
+            }
+        }
+    }
+
+    class TreeRenderer extends DefaultTreeCellRenderer {
+        private ImageIcon saveIcon;
+        private ImageIcon favIcon;
+        Object favoritesNode;
+        private DefaultMutableTreeNode savedNode;
+
+        TreeRenderer(Object favoritesNode, DefaultMutableTreeNode savedNode) {
+            this.favoritesNode = favoritesNode;
+            this.savedNode = savedNode;
+            try {
+                favIcon = new ImageIcon(ImageIO.read(getClass().getResource("/resources/icon_star.gif")));
+                saveIcon = new ImageIcon(ImageIO.read(getClass().getResource("/resources/save_icon.png")));
+            }
+            catch (IOException e) {
+            }
+        }
+
+        public Component getTreeCellRendererComponent(JTree tree, Object value, boolean sel, boolean expanded,
+                                                      boolean leaf,
+                                                      int row, boolean hasFocus)
+        {
+            final Component component = super.getTreeCellRendererComponent(
+                    tree, value, sel,
+                    expanded, leaf, row,
+                    hasFocus);
+            if (favoritesNode == value) {
+                setIcon(favIcon);
+            }
+            else if (savedNode == value) {
+                setIcon(saveIcon);
+            }
+
+            return component;
+        }
     }
 
     private void initComboBox(JComboBox comboBox) {
