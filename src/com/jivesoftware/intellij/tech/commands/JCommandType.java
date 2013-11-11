@@ -19,7 +19,7 @@ public enum JCommandType {
     J_ENV_UPDATE("j-env-update", EnvUpdate.class),
     MODEL_UPGRADE("j-model-upgrade", ModelUpgrade.class),
     J_START("j-vm j-start", JStart.class),
-    J_STOP("j-vm j-stop", JStop.class);
+    J_STOP("j-vm j-stop", JStop.class),
     CUSTOM("custom command(s)", CustomCommand.class);
 
     public static JCommandType getByName(String name) {
