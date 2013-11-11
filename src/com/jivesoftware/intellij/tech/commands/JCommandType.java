@@ -17,10 +17,10 @@ public enum JCommandType {
     MVN("mvn command", MvnCommand.class),
     J_VM("j-vm {command}", Jvm.class),
     J_ENV_UPDATE("j-env-update", EnvUpdate.class),
-    CUSTOM("custom command(s)", CustomCommand.class),
+    MODEL_UPGRADE("j-model-upgrade", ModelUpgrade.class),
     J_START("j-vm j-start", JStart.class),
     J_STOP("j-vm j-stop", JStop.class);
-
+    CUSTOM("custom command(s)", CustomCommand.class);
 
     public static JCommandType getByName(String name) {
         for (JCommandType jCommandType : values()) {

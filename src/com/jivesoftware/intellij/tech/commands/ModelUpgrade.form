@@ -1,0 +1,154 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<form xmlns="http://www.intellij.com/uidesigner/form/" version="1" bind-to-class="com.jivesoftware.intellij.tech.commands.ModelUpgrade">
+  <grid id="27dc6" binding="panel1" layout-manager="FormLayout">
+    <rowspec value="center:d:noGrow"/>
+    <rowspec value="top:3dlu:noGrow"/>
+    <rowspec value="center:max(d;4px):noGrow"/>
+    <rowspec value="top:3dlu:noGrow"/>
+    <rowspec value="center:max(d;4px):noGrow"/>
+    <rowspec value="top:3dlu:noGrow"/>
+    <rowspec value="center:max(d;4px):noGrow"/>
+    <rowspec value="top:3dlu:noGrow"/>
+    <rowspec value="center:max(d;4px):noGrow"/>
+    <rowspec value="top:3dlu:noGrow"/>
+    <rowspec value="center:max(d;4px):noGrow"/>
+    <colspec value="fill:d:grow"/>
+    <constraints>
+      <xy x="20" y="20" width="500" height="400"/>
+    </constraints>
+    <properties/>
+    <border type="none"/>
+    <children>
+      <grid id="6509a" layout-manager="BorderLayout" hgap="0" vgap="0">
+        <constraints>
+          <grid row="0" column="0" row-span="1" col-span="1" vsize-policy="3" hsize-policy="3" anchor="0" fill="3" indent="0" use-parent-layout="false"/>
+          <forms/>
+        </constraints>
+        <properties/>
+        <border type="none"/>
+        <children>
+          <component id="3aebe" class="javax.swing.JCheckBox" binding="environmentCheckBox" default-binding="true">
+            <constraints border-constraint="West"/>
+            <properties>
+              <selected value="true"/>
+              <text value="Environment:"/>
+            </properties>
+          </component>
+          <component id="3fc3f" class="javax.swing.JComboBox" binding="envTxt">
+            <constraints border-constraint="Center"/>
+            <properties>
+              <editable value="true"/>
+              <model>
+                <item value="dev"/>
+                <item value="virtual-all"/>
+                <item value="integ"/>
+                <item value="test"/>
+                <item value="release"/>
+                <item value="preprod"/>
+                <item value="prod"/>
+              </model>
+            </properties>
+          </component>
+        </children>
+      </grid>
+      <grid id="8be3d" layout-manager="BorderLayout" hgap="0" vgap="0">
+        <constraints>
+          <grid row="2" column="0" row-span="1" col-span="1" vsize-policy="3" hsize-policy="3" anchor="0" fill="3" indent="0" use-parent-layout="false"/>
+          <forms/>
+        </constraints>
+        <properties/>
+        <border type="none"/>
+        <children>
+          <component id="44732" class="javax.swing.JCheckBox" binding="tenantCheckBox" default-binding="true">
+            <constraints border-constraint="West"/>
+            <properties>
+              <text value="Tenant:"/>
+            </properties>
+          </component>
+          <component id="96c35" class="javax.swing.JComboBox" binding="tenantTxt">
+            <constraints border-constraint="Center"/>
+            <properties>
+              <editable value="true"/>
+              <enabled value="false"/>
+            </properties>
+          </component>
+        </children>
+      </grid>
+      <grid id="78e59" layout-manager="BorderLayout" hgap="0" vgap="0">
+        <constraints>
+          <grid row="4" column="0" row-span="1" col-span="1" vsize-policy="3" hsize-policy="3" anchor="0" fill="3" indent="0" use-parent-layout="false"/>
+          <forms/>
+        </constraints>
+        <properties/>
+        <border type="none"/>
+        <children>
+          <component id="a65ef" class="javax.swing.JCheckBox" binding="serverCheckBox" default-binding="true">
+            <constraints border-constraint="West"/>
+            <properties>
+              <text value="Server:"/>
+            </properties>
+          </component>
+          <component id="34bb1" class="javax.swing.JTextField" binding="serverTxt">
+            <constraints border-constraint="Center"/>
+            <properties>
+              <enabled value="false"/>
+              <text value="localhost"/>
+            </properties>
+          </component>
+        </children>
+      </grid>
+      <grid id="d7456" layout-manager="BorderLayout" hgap="0" vgap="0">
+        <constraints>
+          <grid row="6" column="0" row-span="1" col-span="1" vsize-policy="3" hsize-policy="3" anchor="0" fill="3" indent="0" use-parent-layout="false"/>
+          <forms/>
+        </constraints>
+        <properties/>
+        <border type="none"/>
+        <children>
+          <component id="edae4" class="javax.swing.JCheckBox" binding="portCheckBox" default-binding="true">
+            <constraints border-constraint="West"/>
+            <properties>
+              <text value="Port:"/>
+            </properties>
+          </component>
+          <component id="59a37" class="javax.swing.JFormattedTextField" binding="portTxt">
+            <constraints border-constraint="Center"/>
+            <properties>
+              <enabled value="false"/>
+              <text value="52100"/>
+            </properties>
+          </component>
+        </children>
+      </grid>
+      <component id="8a67d" class="javax.swing.JCheckBox" binding="skipBuildBCheckBox" default-binding="true">
+        <constraints>
+          <grid row="8" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
+          <forms/>
+        </constraints>
+        <properties>
+          <text value="Skip Build (-B)"/>
+        </properties>
+      </component>
+      <grid id="e9b46" layout-manager="BorderLayout" hgap="0" vgap="0">
+        <constraints>
+          <grid row="10" column="0" row-span="1" col-span="1" vsize-policy="3" hsize-policy="3" anchor="0" fill="3" indent="0" use-parent-layout="false"/>
+          <forms/>
+        </constraints>
+        <properties/>
+        <border type="none"/>
+        <children>
+          <component id="fa4d5" class="javax.swing.JLabel">
+            <constraints border-constraint="West"/>
+            <properties>
+              <text value="Custom flags:"/>
+            </properties>
+          </component>
+          <component id="8dce1" class="javax.swing.JTextField" binding="customTxt">
+            <constraints border-constraint="Center"/>
+            <properties/>
+          </component>
+        </children>
+      </grid>
+    </children>
+  </grid>
+</form>
