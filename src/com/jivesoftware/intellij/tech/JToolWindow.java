@@ -81,8 +81,8 @@ public class JToolWindow implements ToolWindowFactory {
                 commandPanel.add(currentInstance.getPanel(), BorderLayout.CENTER);
                 commandPanel.updateUI();
 
-                commandTitleTxt.setText(currentInstance.getTitle());
-                commandTitleTxt.updateUI();
+//                commandTitleTxt.setText(currentInstance.getTitle());
+//                commandTitleTxt.updateUI();
 //
             }
         });

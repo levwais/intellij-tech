@@ -12,35 +12,24 @@
         <properties/>
         <border type="none"/>
         <children>
-          <grid id="278a1" layout-manager="FormLayout">
-            <rowspec value="center:d:grow"/>
-            <colspec value="fill:d:grow"/>
-            <colspec value="left:4dlu:noGrow"/>
-            <colspec value="fill:max(d;4px):noGrow"/>
+          <grid id="278a1" layout-manager="FlowLayout" hgap="5" vgap="5" flow-align="1">
             <constraints border-constraint="North"/>
-            <properties/>
+            <properties>
+              <preferredSize width="192" height="32"/>
+            </properties>
             <border type="none"/>
             <children>
               <component id="f7092" class="javax.swing.JComboBox" binding="comboBox1" default-binding="true">
-                <constraints>
-                  <grid row="0" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="2" anchor="0" fill="1" indent="0" use-parent-layout="false">
-                    <preferred-size width="128" height="27"/>
-                  </grid>
-                  <forms/>
-                </constraints>
+                <constraints/>
                 <properties>
+                  <maximumSize width="60" height="27"/>
                   <preferredSize width="152" height="27"/>
                 </properties>
               </component>
               <component id="d0b2f" class="javax.swing.JButton" binding="addCommandBtn">
-                <constraints>
-                  <grid row="0" column="2" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="4" fill="2" indent="0" use-parent-layout="false">
-                    <maximum-size width="10" height="10"/>
-                  </grid>
-                  <forms defaultalign-vert="false"/>
-                </constraints>
+                <constraints/>
                 <properties>
-                  <preferredSize width="25" height="29"/>
+                  <preferredSize width="25" height="20"/>
                   <text value="+"/>
                 </properties>
               </component>
