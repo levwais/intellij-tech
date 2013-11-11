@@ -72,6 +72,7 @@ public class JToolWindow implements ToolWindowFactory {
         addCommandBtn.addActionListener(new ActionListener() {
 
             public void actionPerformed(ActionEvent e) {
+                currentNode = null;
                 commandTitleTxt.setText("");
                 final JCommandType selectedItem = (JCommandType)comboBox1.getSelectedItem();
                 final JCommandInstance instance = selectedItem.getInstance();
@@ -82,16 +83,9 @@ public class JToolWindow implements ToolWindowFactory {
 
             public void actionPerformed(ActionEvent e) {
                 if (running) {
-                    currentProcess.destroy();
-
-                    try {
-                        runButton.setIcon(new ImageIcon(ImageIO.read(this.getClass().getResource("/resources/play.png"))));
+                    if (currentProcess != null) {
+                        currentProcess.destroy();
                     }
-                    catch (IOException e1) {
-                        // ignore
-                    }
-                    runButton.setToolTipText("Run");
-                    running = false;
                 }
                 else {
                     new Thread(new Runnable() {
@@ -101,17 +95,8 @@ public class JToolWindow implements ToolWindowFactory {
                     }).start();
 
                     EventLog.getEventLog(project).show(null);
-
-
-                    try {
-                        runButton.setIcon(new ImageIcon(ImageIO.read(this.getClass().getResource("/resources/stop.png"))));
-                    }
-                    catch (IOException e1) {
-                        // ignore
-                    }
-                    runButton.setToolTipText("Stop");
-                    running = true;
                 }
+                changeRunButton();
             }
         });
 
@@ -131,6 +116,10 @@ public class JToolWindow implements ToolWindowFactory {
                             if (selectedNode.getParent() == savedNode) {
                                 savedNode.remove(selectedNode);
                                 storeSavedNodes();
+                                id2CommandMap.remove(((Command)userObject).getId());
+
+                                loadFavCommands();
+                                storeFavNodes();
                             }
                             else if (selectedNode.getParent() == favNode) {
                                 favNode.remove(selectedNode);
@@ -192,6 +181,28 @@ public class JToolWindow implements ToolWindowFactory {
         });
     }
 
+    private void changeRunButton() {
+        if (running) {
+            try {
+                runButton.setIcon(new ImageIcon(ImageIO.read(this.getClass().getResource("/resources/play.png"))));
+            }
+            catch (IOException e1) {
+                // ignore
+            }
+            runButton.setToolTipText("Run");
+            running = false;
+        }
+        else {
+            try {
+                runButton.setIcon(new ImageIcon(ImageIO.read(this.getClass().getResource("/resources/stop.png"))));
+            }
+            catch (IOException e1) {
+                // ignore
+            }
+            runButton.setToolTipText("Stop");
+            running = true;
+        }
+    }
 
 
     private void saveInstance() {
@@ -251,7 +262,11 @@ public class JToolWindow implements ToolWindowFactory {
 
     private void loadSavedCommands() {
         savedNode.removeAllChildren();
-        for (String commandStr : PropertiesComponent.getInstance(project).getValues("savedCommands")) {
+        final String[] savedCommands = PropertiesComponent.getInstance(project).getValues("savedCommands");
+        if (savedCommands == null) {
+            return;
+        }
+        for (String commandStr : savedCommands) {
             try {
                 addCommandToSavedNode(Command.getCommand(commandStr));
             }
@@ -259,6 +274,7 @@ public class JToolWindow implements ToolWindowFactory {
                 // ignore
             }
         }
+        tree.expandPath(new TreePath(savedNode.getPath()));
         tree.updateUI();
     }
     private void storeFavNodes() {
@@ -278,10 +294,17 @@ public class JToolWindow implements ToolWindowFactory {
 
     private void loadFavCommands() {
         favNode.removeAllChildren();
-        for (String commandId : PropertiesComponent.getInstance(project).getValues("favCommandIds")) {
-            final Command command = id2CommandMap.get(commandId);
-            favNode.add(new DefaultMutableTreeNode(command));
+        final String[] commandIds = PropertiesComponent.getInstance(project).getValues("favCommandIds");
+        if (commandIds == null) {
+            return;
         }
+        for (String commandId : commandIds) {
+            final Command command = id2CommandMap.get(commandId);
+            if (command != null) {
+                favNode.add(new DefaultMutableTreeNode(command));
+            }
+        }
+        tree.expandPath(new TreePath(favNode.getPath()));
         tree.updateUI();
     }
 
@@ -320,7 +343,9 @@ public class JToolWindow implements ToolWindowFactory {
             notifications.notify(new Notification(NOTIFICATION_BALLOON_GROUP, NOTIFICATION_TITLE, commandTitleTxt.getText() + " command finished!",
                     NotificationType.INFORMATION));
         }
-
+        if (running) {
+            changeRunButton(); // change "stop" to "run"
+        }
     }
 
     private boolean runCommand(Notifications notifications, ProcessBuilder command) {
@@ -391,6 +416,7 @@ public class JToolWindow implements ToolWindowFactory {
         initTree(treePanel);
 
         loadSavedCommands();
+        loadFavCommands();
     }
 
     private void initTree(JPanel treePanel) {
@@ -408,6 +434,7 @@ public class JToolWindow implements ToolWindowFactory {
             }
 
         });
+        tree.setRootVisible(false);
 
         treePanel.add(tree, BorderLayout.CENTER);
         treePanel.updateUI();
