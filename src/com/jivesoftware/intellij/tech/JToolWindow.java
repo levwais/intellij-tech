@@ -256,7 +256,11 @@ public class JToolWindow implements ToolWindowFactory {
 
     private void loadSavedCommands() {
         savedNode.removeAllChildren();
-        for (String commandStr : PropertiesComponent.getInstance(project).getValues("savedCommands")) {
+        final String[] savedCommands = PropertiesComponent.getInstance(project).getValues("savedCommands");
+        if (savedCommands == null) {
+            return;
+        }
+        for (String commandStr : savedCommands) {
             try {
                 addCommandToSavedNode(Command.getCommand(commandStr));
             }
@@ -284,7 +288,11 @@ public class JToolWindow implements ToolWindowFactory {
 
     private void loadFavCommands() {
         favNode.removeAllChildren();
-        for (String commandId : PropertiesComponent.getInstance(project).getValues("favCommandIds")) {
+        final String[] commandIds = PropertiesComponent.getInstance(project).getValues("favCommandIds");
+        if (commandIds == null) {
+            return;
+        }
+        for (String commandId : commandIds) {
             final Command command = id2CommandMap.get(commandId);
             if (command != null) {
                 favNode.add(new DefaultMutableTreeNode(command));
