@@ -1,31 +1,26 @@
 package com.jivesoftware.intellij.tech;
 
-import com.intellij.execution.process.OSProcessHandler;
-import com.intellij.execution.process.ProcessHandler;
-import com.intellij.execution.process.UnixProcessManager;
-import com.intellij.execution.runners.ConsoleExecuteActionHandler;
 import com.intellij.ide.util.PropertiesComponent;
 import com.intellij.notification.*;
 import com.intellij.openapi.project.Project;
-import com.intellij.openapi.ui.Messages;
 import com.intellij.openapi.util.text.StringUtil;
 import com.intellij.openapi.wm.ToolWindow;
 import com.intellij.openapi.wm.ToolWindowFactory;
 import com.intellij.ui.content.Content;
 import com.intellij.ui.content.ContentFactory;
 import com.intellij.ui.treeStructure.Tree;
-import com.jgoodies.forms.layout.CellConstraints;
 import com.jivesoftware.intellij.tech.commands.JCommandInstance;
 import com.jivesoftware.intellij.tech.commands.JCommandType;
-import com.jivesoftware.intellij.tech.commands.JDeployable;
 
 import javax.swing.*;
 import javax.swing.tree.DefaultMutableTreeNode;
-import javax.swing.tree.TreeNode;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.io.*;
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 
 /**
  * Created with IntelliJ IDEA.
@@ -108,52 +103,12 @@ public class JToolWindow implements ToolWindowFactory {
     private void runJCommand() {
         final Notifications notifications = project.getMessageBus().syncPublisher(Notifications.TOPIC);
 
-        final ProcessBuilder command = currentInstance.getCommand();
-        notifications.notify(new Notification(NOTIFICATION_LOG_GROUP, NOTIFICATION_TITLE, "*** Running command: " +
-                StringUtil.join(command.command(), " "),
-                NotificationType.INFORMATION));
-        final Process process;
-        try {
-            process = command.start();
-        }
-        catch (IOException e) {
-            notifications.notify(new Notification(NOTIFICATION_LOG_GROUP, NOTIFICATION_TITLE, "failed to run: " + e.getMessage(),
-                    NotificationType.ERROR));
-            return;
-        }
-
-        InputStream output = process.getInputStream();
-        InputStreamReader isr = new InputStreamReader(output);
-        BufferedReader br = new BufferedReader(isr);
-
-
-        String line;
-        boolean exit = false;
         boolean error = false;
-
-
-        try {
-            while ((line = br.readLine()) != null || !exit) {
-                if (line != null && !line.isEmpty()) {
-                    notifications.notify(new Notification(NOTIFICATION_LOG_GROUP, NOTIFICATION_TITLE, line,
-                            NotificationType.INFORMATION));
-                }
-                try {
-                    if (0 != process.exitValue()) {
-                        error = true;
-                    }
-                    exit = true;
-                } catch (IllegalThreadStateException t) {
-                    // The process has not yet finished.
-                    // Should we stop it?
-                }
+        for (ProcessBuilder command : currentInstance.getCommands()) {
+            if (!runCommand(notifications, command)) {
+                error = true;
             }
         }
-        catch (IOException e) {
-            notifications.notify(new Notification(NOTIFICATION_LOG_GROUP, NOTIFICATION_TITLE, "failed to run: " + e.getMessage(),
-                    NotificationType.ERROR));
-        }
-
 
         if (error) {
             notifications.notify(new Notification(NOTIFICATION_BALLOON_GROUP, NOTIFICATION_TITLE, commandTitleTxt.getText() + " command finished with errors!",
@@ -164,6 +119,53 @@ public class JToolWindow implements ToolWindowFactory {
                     NotificationType.INFORMATION));
         }
 
+    }
+
+    private boolean runCommand(Notifications notifications, ProcessBuilder command) {
+        boolean error = false;
+        notifications.notify(new Notification(NOTIFICATION_LOG_GROUP, NOTIFICATION_TITLE, "*** Running command: " +
+                StringUtil.join(command.command(), " "),
+                NotificationType.INFORMATION));
+        Process process = null;
+        try {
+            process = command.start();
+        }
+        catch (IOException e) {
+            notifications.notify(new Notification(NOTIFICATION_LOG_GROUP, NOTIFICATION_TITLE, "failed to run: " + e.getMessage(),
+                    NotificationType.ERROR));
+        }
+
+        if (process != null) {
+            InputStream output = process.getInputStream();
+            InputStreamReader isr = new InputStreamReader(output);
+            BufferedReader br = new BufferedReader(isr);
+
+
+            String line;
+            boolean exit = false;
+            try {
+                while ((line = br.readLine()) != null || !exit) {
+                    if (line != null && !line.isEmpty()) {
+                        notifications.notify(new Notification(NOTIFICATION_LOG_GROUP, NOTIFICATION_TITLE, line,
+                                NotificationType.INFORMATION));
+                    }
+                    try {
+                        if (0 != process.exitValue()) {
+                            error = true;
+                        }
+                        exit = true;
+                    } catch (IllegalThreadStateException t) {
+                        // The process has not yet finished.
+                        // Should we stop it?
+                    }
+                }
+            }
+            catch (IOException e) {
+                notifications.notify(new Notification(NOTIFICATION_LOG_GROUP, NOTIFICATION_TITLE, "failed to run: " + e.getMessage(),
+                        NotificationType.ERROR));
+            }
+        }
+        return !error;
     }
 
     private void initNotifications() {

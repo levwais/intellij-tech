@@ -1,8 +1,11 @@
 package com.jivesoftware.intellij.tech.commands;
 
+import com.google.common.collect.Lists;
+
 import javax.swing.*;
 import java.io.File;
 import java.io.IOException;
+import java.util.List;
 
 /**
  * Created with IntelliJ IDEA.
@@ -30,8 +33,10 @@ public class JDeployable implements JCommandInstance {
         return title;
     }
 
-    public ProcessBuilder getCommand() {
-        return new ProcessBuilder("j", textField1.getText()).directory(new File(System.getenv("J_BIN"))).redirectErrorStream(true);
+    public List<ProcessBuilder> getCommands() {
+        return Lists.newArrayList(
+                new ProcessBuilder("j", textField1.getText()).directory(new File(System.getenv("J_BIN"))).redirectErrorStream(true)
+        );
     }
 
     public JPanel getPanel() {
